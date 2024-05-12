@@ -2,6 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+# CONSTANTS
+SIMULATIONS = 10000
+STEPS = 200
+
 # Transitions
 beta = 0.5
 mu = 0.1
@@ -23,19 +27,15 @@ W = np.array([
 initialConfig = random.choice([['V', 'I'], ['I', 'V']])
 networkSize = len(initialConfig)
 
-
-# Time (in steps) until the eradication of the virus
+# Time (in STEPS) until the eradication of the virus
 eradicationTime = 0
 
-# Lists to store counts of servers in each category at each time step for ALL simulations
+# Lists to store counts of servers in each category at each time step for ALL SIMULATIONS
 countsV_all = []
 countsI_all = []
 countsP_all = []
 
-simulations = 1000
-steps = 200
-
-for sim in range(simulations):
+for sim in range(SIMULATIONS):
     current_configuration = initialConfig
  
     eradicated = False
@@ -45,7 +45,7 @@ for sim in range(simulations):
     countsI = [1]
     countsP = [0]
 
-    for i in range(steps-1): # ti
+    for i in range(STEPS-1): # ti
 
         # Check if we have reached virus eradication
         if not eradicated and 'I' not in current_configuration:
@@ -67,6 +67,8 @@ for sim in range(simulations):
 
                 k = 0
                 infectable = False
+
+                # Check connections and infection
                 while k < networkSize and not infectable:
                     if k != j and W[j][k] == 1: # must be connected 
 
@@ -79,7 +81,6 @@ for sim in range(simulations):
                             transition_probs['V']['V'], transition_probs['V']['I'] = 1, 0
 
                     k += 1 # next server
-
           
             # choose the next state based on transition probabilites
             nextState = random.choices(list(transition_probs[serverState].keys()), weights=list(transition_probs[serverState].values()))[0]
@@ -95,52 +96,29 @@ for sim in range(simulations):
             elif nextState == 'P' :
                 countsP[i+1] += prob
             
-
-            # update current server state to the next state
-            
+            # Update current server state to the next state   
             next_configuration.append(nextState)
         
         current_configuration =  next_configuration
-
   
     countsV_all.append(countsV)
     countsI_all.append(countsI)
     countsP_all.append(countsP)
 
-print("La temps moyen pour l'eradication du virus = ", eradicationTime/simulations)
+print("La temps moyen pour l'eradication du virus = ", eradicationTime/SIMULATIONS)
 
-# Calculate the average counts over all simulations
-
-
+# Calculate the average counts over all SIMULATIONS
 average_countsV = np.mean(countsV_all, axis=0)    
 average_countsI = np.mean(countsI_all, axis=0)
 average_countsP = np.mean(countsP_all, axis=0)
 
 # Plotting
-time_steps = range(steps)
+time_steps = range(STEPS)
 plt.plot(time_steps, average_countsV, label='V')
 plt.plot(time_steps, average_countsI, label='I')
 plt.plot(time_steps, average_countsP, label='P')
 plt.xlabel('Temps')
 plt.ylabel('Nombre de serveurs')
-plt.title('Nombre moyen de serveurs dans chaque catégorie')
+plt.title('Nombre moyen de serveurs dans chaque catégorie : {} SIMULATIONS'.format(SIMULATIONS))
 plt.legend()
 plt.show()
-
-
-# test PYDTMC
-# import pydtmc
-# p = [ [0.45, 0, 0, 0.05, 0, 0.05, 0, 0.45, 0],
-#     [0, 0.45, 0.05, 0, 0.05, 0, 0, 0.45, 0],
-#     [0.045, 0, 0.855, 0, 0, 0.005, 0.095, 0, 0],
-#     [0, 0.045, 0, 0.855, 0.005, 0, 0.095, 0, 0],
-#     [0, 0, 0, 0, 0.95, 0, 0, 0, 0.05],
-#     [0, 0, 0, 0, 0, 0.95, 0, 0, 0.05],
-#     [0, 0, 0, 0, 0.0475, 0.0475, 0.9025, 0, 0.0025],
-#     [0, 0, 0.09, 0.09, 0, 0, 0.01, 0.81, 0],
-#     [0, 0, 0, 0, 0, 0, 0, 0, 1]]
-# mc = pydtmc.MarkovChain(p, ['IV', 'VI', 'IP', 'PI', 'VP', 'PV', 'PP', 'II', 'VV'])
-# print(mc)
-# print(mc.transient_states)
-# print(mc.steady_states)
-# print(mc.simulate(100, seed=32))
