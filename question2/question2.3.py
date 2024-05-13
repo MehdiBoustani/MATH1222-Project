@@ -10,7 +10,10 @@ STEPS = 100
 # Transitions
 beta = 0.3
 mu = 0.4
-alpha = 0.2
+alpha = 0.05
+#alpha = 0.1
+#alpha = 0.2
+
 
 transition_probs = {
     'V': {'V': 1-beta, 'I': beta, 'P': 0},

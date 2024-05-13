@@ -5,7 +5,7 @@ import random
 
 # CONSTANTS
 SIMULATIONS = 10
-STEPS = 100
+STEPS = 1000
 
 # """ ORDRE DE 0.8 """
 beta = 0.05
@@ -35,7 +35,7 @@ greatestEigenvalue = np.linalg.eigvalsh(W)[-1]
 print("Greatest eigenvalue = ", greatestEigenvalue)
 print((beta*greatestEigenvalue)/mu)
 
-print(" beta/mu <= greatest eigenvalue ? ", (beta/mu) <= (1/greatestEigenvalue)) # 
+print(" beta/mu <= 1/greatest eigenvalue ? ", (beta/mu) <= (1/greatestEigenvalue)) # 
 
 
 # Initial state
