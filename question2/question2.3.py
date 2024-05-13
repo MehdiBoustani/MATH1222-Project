@@ -4,13 +4,13 @@ from scipy.sparse import csr_matrix
 import random
 
 # CONSTANTS
-SIMULATIONS = 100
-STEPS = 25
+SIMULATIONS = 10
+STEPS = 100
 
 # Transitions
 beta = 0.3
 mu = 0.4
-alpha = 0
+alpha = 0.2
 
 transition_probs = {
     'V': {'V': 1-beta, 'I': beta, 'P': 0},
@@ -32,31 +32,26 @@ np.random.shuffle(initialConfig)
 # Time (in STEPS) until the eradication of the virus
 eradicationTime = 0
 
-# WE CAN ADD infectedNumber to avoid if not eradicated and 'I' not in current_configuration:
-
-countsV_all = []
 countsI_all = []
-countsP_all = []
 
 for sim in range(SIMULATIONS):
     current_configuration = initialConfig
  
     eradicated = False
 
-    countsV = [N/2]
     countsI = [N/2]
-    countsP = [0]
 
     for i in range(STEPS-1): # ti
-
+        
         # Check if we have reached virus eradication
-        if not eradicated and 'I' not in current_configuration:
-            eradicationTime += i
-            eradicated = True
+        if not eradicated :
+            if 'I' not in current_configuration :
+                eradicated = True
 
-        countsV.append(0)
+            else :
+                eradicationTime += 1
+
         countsI.append(0)
-        countsP.append(0)
 
         next_configuration = []
         
@@ -98,36 +93,27 @@ for sim in range(SIMULATIONS):
             # get the probability to be in the chosen state
             prob = transition_probs[serverState][nextState]
 
-            if nextState == 'V':
-                countsV[i+1] += prob
-            
-            elif nextState == 'I' :
-                countsI[i+1] += prob
 
-            elif nextState == 'P' :
-                countsP[i+1] += prob
-            
+            if nextState == 'I' :
+                countsI[i+1] += prob
+        
             next_configuration.append(nextState)
         
         # Update to new states 
         current_configuration =  next_configuration
 
-    countsV_all.append(countsV)
     countsI_all.append(countsI)
-    countsP_all.append(countsP)
 
 # Eradication average time
-print("La temps moyen pour l'eradication du virus = ", eradicationTime/SIMULATIONS)
+if eradicated :
+    print("La temps moyen pour l'eradication du virus = ", eradicationTime/SIMULATIONS)
+else :
+    print("Le virus n'a pas complètement disparu dans le réseau")
 
-average_countsV = np.mean(countsV_all, axis=0)    
 average_countsI = np.mean(countsI_all, axis=0)
-average_countsP = np.mean(countsP_all, axis=0)
-
 # Plotting
 time_STEPS = range(STEPS)
-plt.plot(time_STEPS, average_countsV, label='V')
 plt.plot(time_STEPS, average_countsI, label='I')
-plt.plot(time_STEPS, average_countsP, label='P')
 plt.xlabel('Temps')
 plt.ylabel('Nombre de serveurs')
 plt.ylim(0, N)
