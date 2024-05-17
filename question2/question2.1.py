@@ -36,74 +36,45 @@ totalCountsI = np.zeros(STEPS)
 totalCountsP = np.zeros(STEPS)
 
 for sim in range(SIMULATIONS):
-    current_configuration = initialConfig
- 
+    current_configuration = initialConfig.copy()
+    
     eradicated = False
 
-    totalCountsV[0] += 1
-    totalCountsI[0] += 1
-
+    totalCountsV[0] += current_configuration.count('V')
+    totalCountsI[0] += current_configuration.count('I')
+    totalCountsP[0] += current_configuration.count('P')
     
-    for i in range(STEPS-1): # ti
-
-        # Check if we have reached virus eradication
+    for i in range(1, STEPS):
         if not eradicated and 'I' not in current_configuration:
             eradicationTime += i
             eradicated = True
-
+        
         next_configuration = []
         
-        for j in range(networkSize):            
-                
+        for j in range(networkSize):
             serverState = current_configuration[j]
-
-            # check connections
             if serverState == 'V':
+                infectable = any(current_configuration[k] == 'I' and W[j][k] == 1 for k in range(networkSize))
+                if infectable:
+                    transition_probs['V']['V'], transition_probs['V']['I'] = 1-beta, beta
+                else:
+                    transition_probs['V']['V'], transition_probs['V']['I'] = 1, 0
 
-                k = 0
-                infectable = False
-
-                # Check connections and infection
-                while k < networkSize and not infectable:
-                    if k != j and W[j][k] == 1: # must be connected 
-
-                        if current_configuration[k] == 'I' : # a connected server is infected
-                            # the current server can be infected
-                            transition_probs['V']['V'], transition_probs['V']['I'] = 1-beta, beta
-                            infectable = True
-                        else :
-                            # no connected server was infected
-                            transition_probs['V']['V'], transition_probs['V']['I'] = 1, 0
-
-                    k += 1 # next server
-          
-            # Choose the next state based on transition probabilites
             nextState = random.choices(list(transition_probs[serverState].keys()), weights=list(transition_probs[serverState].values()))[0]
-
-            prob = transition_probs[serverState][nextState]
-
-            if nextState == 'V':
-                totalCountsV[i+1] += prob
-            
-            elif nextState == 'I' :
-                totalCountsI[i+1] += prob
-
-            elif nextState == 'P' :
-                totalCountsP[i+1] += prob
-            
-            # Update current server state to the next state   
             next_configuration.append(nextState)
         
-        current_configuration =  next_configuration
+        current_configuration = next_configuration
+        
+        totalCountsV[i] += current_configuration.count('V')
+        totalCountsI[i] += current_configuration.count('I')
+        totalCountsP[i] += current_configuration.count('P')
 
+# Calcul des moyennes
+totalCountsV /= SIMULATIONS
+totalCountsI /= SIMULATIONS
+totalCountsP /= SIMULATIONS
 
-print("La temps moyen pour l'eradication du virus = ", eradicationTime/SIMULATIONS)
-
-# Get the average counts over all SIMULATIONS
-for i in range(STEPS):
-    totalCountsV[i] /= SIMULATIONS
-    totalCountsI[i] /= SIMULATIONS
-    totalCountsP[i] /= SIMULATIONS
+print("Le temps moyen pour l'éradication du virus = ", eradicationTime / SIMULATIONS)
 
 # Plotting
 time_steps = range(STEPS)
