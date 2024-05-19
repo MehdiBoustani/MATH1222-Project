@@ -18,15 +18,19 @@ beta = 0.0001
 mu = 0.124875
 alpha = 1
 
+# beta = 0.0003
+# mu = 0.374625
+# alpha = 1
 
 """ ORDRE DE 2 """
-# beta = 0.001
-# mu = 0.4995
+# beta = 0.0001
+# mu = 0.04995
 # alpha = 1
 
-# beta = 0.03
-# mu = 0.1509
+# beta = 0.0003
+# mu = 0.14985
 # alpha = 1
+
 
 N = 1000 # number of servers
 
@@ -78,9 +82,10 @@ for sim in range(SIMULATIONS):
         num_servers_P_to_V = 0
 
         # V servers
-        for v in range(V):
-            if random.random() < InfectionProb :
-                num_servers_V_to_I += 1
+        if not eradicated:
+            for v in range(V):
+                if random.random() < InfectionProb :
+                    num_servers_V_to_I += 1
 
         # I servers
         for i in range(I):
@@ -115,7 +120,7 @@ infected[1:] = averageCounts[:, 1]
 infected[-1] = averageCounts[-1, 1]
 
 # Plot
-plt.plot(infected, label='Infectés (I)', color='orange')
+plt.plot(infected, label='Infectés (I)', color='red')
 
 plt.xlabel('Temps')
 plt.ylabel('Nombre de serveurs')

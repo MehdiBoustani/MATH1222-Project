@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 
 # CONSTANTS
-SIMULATIONS = 50
+SIMULATIONS = 25
 STEPS = 150
 
 # Transition probabilites
@@ -25,7 +25,11 @@ P = 2
 # Number of entreprise of SEGI
 SEGI = 220
 
-# Define our network containing all entreprises and their connections
+"""
+    @brief : Initializes a network using We and Ns 
+    @returns : dict() : the created network
+
+    """
 def initNetwork():
     network = {}
     for entreprise in range(nbEntreprises):
@@ -44,8 +48,9 @@ def initNetwork():
     return network
 
 """
-    @brief : gets the number of intern infected servers and the total number of the extern infected servers (connected entreprises)
+    @brief : gets the number of intern infected servers (i.e inside the entreprise) and the total number of the extern infected servers (of connected entreprises)
 
+    @param network : a dictionnary giving a network
     @param entreprise : an entreprise
     @param infectionsList : a list of all infections at the current step (not updated)
 
@@ -64,6 +69,16 @@ def getNbInfected(network, entreprise, infectionsList):
     
     return internInfected, externInfected
 
+
+"""
+    @brief : Creates two lists : a list containing the current infections, and a list containing total servers in each category for all network
+
+    @param network : a dictionnary giving a network
+
+    @returns : List() : List containing the number of infected servers in each entreprise of the network
+               List() : a list containing total number of servers in each category for all network
+
+    """
 def getCurrentNumbers(network):
     currentInfections = np.empty(nbEntreprises)
     for e in network:
@@ -72,6 +87,16 @@ def getCurrentNumbers(network):
     
     return currentInfections #, currentServers
 
+
+"""
+    @brief : Simulates the markov chain of our network for a given number of steps
+
+    @param network : a dictionnary giving a network
+    @param timeSteps : the steps (duration) of the simulator
+
+    @returns np array of arrays containing the total number of servers in each category at every step (for SEGI)
+
+    """
 def simulate(network, timeSteps):
 
     totalServers_SEGI = np.zeros((3, STEPS), dtype=int)  # Array to store total number of servers in each category at each step 

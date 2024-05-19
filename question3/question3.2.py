@@ -4,7 +4,7 @@ import random
 
 # CONSTANTS
 SIMULATIONS = 10000
-STEPS = 100
+STEPS = 200
 
 beta = 0.5
 mu = 0.1
@@ -28,6 +28,7 @@ for sim in range(SIMULATIONS):
 
     for s in range(1, STEPS):
         
+        # Use V, I, P for easy usage
         V = currentConfig[0]
         I = currentConfig[1]
         P = currentConfig[2]
@@ -42,9 +43,11 @@ for sim in range(SIMULATIONS):
         num_servers_I_to_P = 0
         num_servers_P_to_V = 0
 
-        for v in range(V):
-            if random.random() < InfectionProb :
-                num_servers_V_to_I += 1
+        # if I = 0, there is no infection
+        if not eradicated:
+            for v in range(V):
+                if random.random() < InfectionProb :
+                    num_servers_V_to_I += 1
 
         for i in range(I):
             if random.random() < mu :
@@ -54,11 +57,12 @@ for sim in range(SIMULATIONS):
             if random.random() < alpha :
                 num_servers_P_to_V += 1
 
-        # Update servers numbers
+        # Update servers numbers in each category
         currentConfig[0] += num_servers_P_to_V - num_servers_V_to_I # V(t+1)
         currentConfig[1] += num_servers_V_to_I - num_servers_I_to_P # I(t+1)
         currentConfig[2] += num_servers_I_to_P - num_servers_P_to_V # P(t+1)
 
+        # Update the count for average numbers over simulations
         counts[s] = currentConfig
 
     averageCounts += counts

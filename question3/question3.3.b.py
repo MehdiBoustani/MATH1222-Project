@@ -11,15 +11,15 @@ import random
 
 # CONSTANTS
 SIMULATIONS = 100
-STEPS = 100
+STEPS = 25
 
 beta = 0.3
 mu = 0.4
 
 # Test of different values of alpha
-alpha = 0.01
-# alpha = 0.03
-# alpha = 0.05
+alpha = 0.05
+# alpha = 0.07
+# alpha = 0.09
 # alpha = 0.1
 # alpha = 0.15
 # alpha = 0.2
@@ -53,6 +53,7 @@ for sim in range(SIMULATIONS):
         P = currentConfig[2]
 
         if I == 0 and not eradicated:
+            # time to eradicate the virus
             eradicationTime += s-1
             eradicated = True
 
@@ -61,11 +62,12 @@ for sim in range(SIMULATIONS):
         num_servers_V_to_I = 0
         num_servers_I_to_P = 0
         num_servers_P_to_V = 0
-
+        
+        if not eradicated :
         # V servers
-        for v in range(V):
-            if random.random() < InfectionProb :
-                num_servers_V_to_I += 1
+            for v in range(V):
+                if random.random() < InfectionProb :
+                    num_servers_V_to_I += 1
 
         # I servers
         for i in range(I):
@@ -95,9 +97,9 @@ else :
 averageCounts /= SIMULATIONS # average numbers 
 
 # Plot
-# plt.plot(averageCounts[:, 0], label='Vulnérables (V)')
+plt.plot(averageCounts[:, 0], label='Vulnérables (V)')
 plt.plot(averageCounts[:, 1], label='Infectés (I)')
-# plt.plot(averageCounts[:, 2], label='Protégés (P)')
+plt.plot(averageCounts[:, 2], label='Protégés (P)')
 
 plt.xlabel('Temps')
 plt.ylabel('Nombre de serveurs')

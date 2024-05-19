@@ -22,7 +22,11 @@ V = 0
 I = 1
 P = 2
 
-# Define our network containing all entreprises and their connections
+"""
+    @brief : Initializes a network using We and Ns 
+    @returns : dict() : the created network
+
+    """
 def initNetwork():
     network = {}
     for entreprise in range(nbEntreprises):
@@ -41,8 +45,9 @@ def initNetwork():
     return network
 
 """
-    @brief : gets the number of intern infected servers and the total number of the extern infected servers (connected entreprises)
+    @brief : gets the number of intern infected servers (i.e inside the entreprise) and the total number of the extern infected servers (of connected entreprises)
 
+    @param network : a dictionnary giving a network
     @param entreprise : an entreprise
     @param infectionsList : a list of all infections at the current step (not updated)
 
@@ -61,6 +66,16 @@ def getNbInfected(network, entreprise, infectionsList):
     
     return internInfected, externInfected
 
+
+
+"""
+    @brief : Creates a list with the current infections of each entreprise inside a network
+
+    @param network : a dictionnary giving a network
+
+    @returns : List() : List containing the number of infected servers in each entreprise of the network
+
+    """
 def getCurrentInfections(network):
     currentInfections = np.empty(nbEntreprises)
     for e in network:
@@ -68,6 +83,14 @@ def getCurrentInfections(network):
        
     return currentInfections
 
+
+"""
+    @brief : Simulates the markov chain of our network for a given number of steps
+
+    @param network : a dictionnary giving a network
+    @param timeSteps : the steps (duration) of the simulator
+
+    """
 def simulate(network, timeSteps):
 
     for s in range(timeSteps):
@@ -102,7 +125,7 @@ def simulate(network, timeSteps):
 
 def main():
     initialNetwork = initNetwork()
-
+    print(initialNetwork[220])
     # Initial state : the virus attacks company/entreprise 0 -> one infected server
     initialNetwork[0]['servers'][I] += 1
     initialNetwork[0]['servers'][V] -= 1
@@ -112,6 +135,5 @@ def main():
     for sim in range(SIMULATIONS):
         network = deepcopy(initialNetwork)
         simulate(network, STEPS)
-    
 
 main()

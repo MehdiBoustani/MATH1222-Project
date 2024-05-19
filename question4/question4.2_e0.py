@@ -22,7 +22,11 @@ V = 0
 I = 1
 P = 2
 
-# Define our network containing all entreprises and their connections
+"""
+    @brief : Initializes a network using We and Ns 
+    @returns : dict() : the created network
+
+    """
 def initNetwork():
     network = {}
     for entreprise in range(nbEntreprises):
@@ -41,8 +45,9 @@ def initNetwork():
     return network
 
 """
-    @brief : gets the number of intern infected servers and the total number of the extern infected servers (connected entreprises)
+    @brief : gets the number of intern infected servers (i.e inside the entreprise) and the total number of the extern infected servers (of connected entreprises)
 
+    @param network : a dictionnary giving a network
     @param entreprise : an entreprise
     @param infectionsList : a list of all infections at the current step (not updated)
 
@@ -61,30 +66,44 @@ def getNbInfected(network, entreprise, infectionsList):
     
     return internInfected, externInfected
 
+
+"""
+    @brief : Creates two lists : a list containing the current infections, and a list containing total servers in each category for all network
+
+    @param network : a dictionnary giving a network
+
+    @returns : List() : List containing the number of infected servers in each entreprise of the network
+               List() : a list containing total number of servers in each category for all network
+
+    """
 def getCurrentNumbers(network):
-    # currentServers = np.zeros(3, dtype=int) # store number of servers in each category
     currentInfections = np.empty(nbEntreprises)
     for e in network:
         currentInfections[e] = network[e]['servers'][I]
-        # currentServers[V] += network[e]['servers'][V]
-        # currentServers[I] += network[e]['servers'][I]
-        # currentServers[P] += network[e]['servers'][P]
     
     return currentInfections #, currentServers
 
+"""
+    @brief : Simulates the markov chain of our network for a given number of steps
+
+    @param network : a dictionnary giving a network
+    @param timeSteps : the steps (duration) of the simulator
+
+    @returns np array of arrays containing the total number of servers in each category at every step (for entreprise 0)
+
+    """
 def simulate(network, timeSteps):
 
     totalServers_e0 = np.zeros((3, STEPS), dtype=int)  # Array to store total number of servers in each category at each step 
 
     for s in range(timeSteps):
-        # currentInfections, currentServers = getCurrentNumbers(network)
         currentInfections = getCurrentNumbers(network)
 
         totalServers_e0[:, s] += network[0]['servers']
 
-        # print("Vulnerables = {}, Infected = {}, Protected = {} at step {}".format(currentServers[V], currentServers[I], currentServers[P], s))
         for e in network:
             internInfected, externInfected = getNbInfected(network, e, currentInfections)
+
              # probability of a vulnerable server to be infected
             infectionProb = 1 - ((1-beta1)**internInfected) * ((1-beta2)**externInfected)
             

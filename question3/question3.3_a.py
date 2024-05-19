@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import random
 
 # CONSTANTS
-SIMULATIONS = 1000
+SIMULATIONS = 100
 STEPS = 25
 
 beta = 0.3
@@ -47,9 +47,10 @@ for sim in range(SIMULATIONS):
         num_servers_I_to_P = 0
         num_servers_P_to_V = 0
 
-        for v in range(V):
-            if random.random() < InfectionProb :
-                num_servers_V_to_I += 1
+        if not eradicated :
+            for v in range(V):
+                if random.random() < InfectionProb :
+                    num_servers_V_to_I += 1
 
         for i in range(I):
             if random.random() < mu :
