@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 
 # CONSTANTS
-# SIMULATIONS = 25
 
-SIMULATIONS = 10
+SIMULATIONS = 25
 STEPS = 250
 
 # Transition probabilites
@@ -120,6 +119,7 @@ def simulate(network, timeSteps, mu_SEGI):
                 if np.random.rand() < mu :
                     nbServers_I_to_P += 1
 
+
             network[e]['servers'][V] -= nbServers_V_to_I # V(t+1)
             network[e]['servers'][I] += nbServers_V_to_I - nbServers_I_to_P # I(t+1)
             network[e]['servers'][P] += nbServers_I_to_P # P(t+1)
@@ -135,11 +135,12 @@ def main():
     initialNetwork[0]['servers'][I] += 1
     initialNetwork[0]['servers'][V] -= 1
 
-    
     mu_SEGI = mu_network
-    target = 0.3
+
+    target = 0.01
+
     targetReached = False
-    delta_mu = 0.1
+    delta_mu = 0.01
 
     while not targetReached:
 
@@ -147,11 +148,13 @@ def main():
 
         for sim in range(SIMULATIONS):
             network = deepcopy(initialNetwork)
+
             maxInfectedSEGI = simulate(network, STEPS, mu_SEGI)
             if maxInfectedSEGI > 10:
                 count_exceed_10 += 1
 
         dangerProb = count_exceed_10/SIMULATIONS
+
         if dangerProb < target :
             targetReached = True
         
@@ -160,7 +163,6 @@ def main():
     
     print("la valeur de μ du nouvel antivirus devrait être autour de : ", mu_SEGI)
 
-        
-    # print("Probabilité d'avoir au moins 20 pourcent de machines infectées simultanément au SEGI : ", count_exceed_10/SIMULATIONS)
+    print("Probabilité d'avoir au moins 20 pourcent de machines infectées simultanément au SEGI est de {} avec μ = {} ".format(dangerProb, mu_SEGI))
 
 main()

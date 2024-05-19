@@ -36,7 +36,7 @@ np.fill_diagonal(W, 0)
 # Check βλ/μ 
 greatestEigenvalue = np.linalg.eigvalsh(W)[-1]
 print("Greatest eigenvalue = ", greatestEigenvalue)
-print((beta*greatestEigenvalue)/mu)
+# print((beta*greatestEigenvalue)/mu)
 
 print(" beta/mu <= 1/greatest eigenvalue ? ", (beta/mu) <= (1/greatestEigenvalue)) # 
 
