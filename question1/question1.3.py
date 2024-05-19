@@ -38,6 +38,7 @@ averageServers_I = []
 averageServers_P = []
 
 for i in range(timeSteps):
+
     # Average time for each categorie in each step
     averageServers_V.append((current_state[0] + current_state[1] + current_state[4] + current_state[5] + N*current_state[8]))
     averageServers_I.append((current_state[0] + current_state[1] + current_state[2] + current_state[3] + N*current_state[7]))
