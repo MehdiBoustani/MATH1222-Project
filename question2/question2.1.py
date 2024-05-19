@@ -4,7 +4,7 @@ import random
 
 # CONSTANTS
 SIMULATIONS = 10000
-STEPS = 100
+STEPS = 200
 
 # --------------- Transitions ------------------ #
 
@@ -51,33 +51,34 @@ totalCountsI = np.zeros(STEPS)
 totalCountsP = np.zeros(STEPS)
 
 for sim in range(SIMULATIONS):
-    current_configuration = initialConfig
+    currentConfiguration = initialConfig
 
     eradicated = False
 
-    totalCountsV[0] += np.sum(current_configuration == V)
-    totalCountsI[0] += np.sum(current_configuration == I)
-    totalCountsP[0] += np.sum(current_configuration == P)
+    # number of servers in initial configuration
+    totalCountsV[0] += np.sum(currentConfiguration == V)
+    totalCountsI[0] += np.sum(currentConfiguration == I)
+    totalCountsP[0] += np.sum(currentConfiguration == P)
         
     for i in range(STEPS-1): # time steps
 
-        if not eradicated and I not in current_configuration:
+        if not eradicated and I not in currentConfiguration:
             eradicationTime += i
             eradicated = True
 
-        next_configuration = []
+        nextConfiguration = []
         
         # Run through servers
         for j in range(N):            
                 
-            serverState = current_configuration[j]
+            serverState = currentConfiguration[j]
             
             # current server = V
             if serverState == V:
                 if not eradicated :
 
                     # Vector multiplication to get the number of connected and infected nodes
-                    connectedInfected = np.dot(current_configuration % 2, W[j])
+                    connectedInfected = np.dot(currentConfiguration % 2, W[j])
                 else : 
                     connectedInfected = 0
                
@@ -115,9 +116,9 @@ for sim in range(SIMULATIONS):
                     nextState = P # P to P
                     totalCountsP[i+1] += 1
 
-            next_configuration.append(nextState)
+            nextConfiguration.append(nextState)
         
-        current_configuration = np.array(next_configuration)
+        currentConfiguration = np.array(nextConfiguration)
 
 if eradicated :
     print("La temps moyen pour l'eradication du virus = ", eradicationTime/SIMULATIONS)
@@ -137,6 +138,6 @@ plt.plot(timeSteps, totalCountsP, label='Protégés (P)')
 
 plt.xlabel('Temps')
 plt.ylabel('Nombre moyen de serveurs')
-plt.title('Évolution du nombre moyen de serveurs : {}'.format(SIMULATIONS))
+plt.title('Évolution du nombre moyen de serveurs : {} Simulations'.format(SIMULATIONS))
 plt.legend()
 plt.show()

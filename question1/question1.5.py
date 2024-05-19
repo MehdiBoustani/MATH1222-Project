@@ -4,13 +4,16 @@ import matplotlib.pyplot as plt
 # ------------------------------------------ QUESTION 1.5 DELTA --------------------------------------------- #
 
 N = 2 # nombre de serveurs
-timeSteps = 150 # pas de temps
+timeSteps = 200 # pas de temps
 
 # Probabilités
 beta = 0.5
 mu = 0.1
 alpha = 0.05
 delta = 0.05
+
+TOLERANCE = 1e-6
+# ORDER OF STATES : IV VI IP PI VP PV PP II VV
 
 P = np.array([
             [(1-mu)*(1-beta), 0, 0, mu*beta, 0, mu*(1-beta), 0, beta*(1-mu), 0],
@@ -33,24 +36,45 @@ P = np.array([
 
             ])
 
-current_state = np.array([0.5, 0.5, 0, 0, 0, 0, 0, 0, 0])
+# ORDER OF STATES :        IV   VI  IP PI VP PV PP  II  VV
+currentState = np.array([0.5, 0.5, 0, 0, 0, 0,  0,  0,  0])
 
 averageServers_V = []
 averageServers_I = []
 averageServers_P = []
 
-for i in range(timeSteps):
+i = 0
+stationnary = False
+while i < timeSteps and not stationnary:
     # Calcul du nombre moyen de serveurs dans chaque catégorie
-    averageServers_V.append((current_state[0] + current_state[1] + current_state[4] + current_state[5] + N*current_state[8]))
-    averageServers_I.append((current_state[0] + current_state[1] + current_state[2] + current_state[3] + N*current_state[7]))
-    averageServers_P.append((current_state[2] + current_state[3] + current_state[4] + current_state[5] + N*current_state[6]))
+    averageServers_V.append((currentState[0] + currentState[1] + currentState[4] + currentState[5] + N*currentState[8]))
+    averageServers_I.append((currentState[0] + currentState[1] + currentState[2] + currentState[3] + N*currentState[7]))
+    averageServers_P.append((currentState[2] + currentState[3] + currentState[4] + currentState[5] + N*currentState[6]))
 
-    current_state = np.dot(current_state, P)
+    nextState = np.dot(currentState, P)
 
-# Tracé des courbes pour chaque catégorie
-plt.plot(range(timeSteps), averageServers_V, label='Vulnérables (V)')
-plt.plot(range(timeSteps), averageServers_I, label='Infectés (I)')
-plt.plot(range(timeSteps), averageServers_P, label='Protégés (P)')
+    # Convergence vers la distribution stationnaire
+    if np.all(np.abs(nextState - currentState) < TOLERANCE):
+        print(f"Convergence atteinte à l'étape {i} vers la distribution stationnaire {currentState}")
+        stationnary = True
+
+    currentState = nextState
+
+    i += 1
+
+percentageS1 = currentState[0] + currentState[2] + currentState[7]
+percentageS2 = currentState[1] + currentState[3] + currentState[7]
+
+print(percentageS1)
+# Calcul du pourcentage du temps passé dans l'etat infectieux en regime stationnaire
+print(f"Pourcentage passé dans l'état infectieux en regime stationnaire Serveur 1 :  {percentageS1 * 100:.2f}% ")
+print(f"Pourcentage passé dans l'état infectieux en regime stationnaire Serveur 2 :  {percentageS2 * 100:.2f}% ")
+
+
+# Tracé des courbes pour chaque catégorie jusqu'à l'étape de convergence
+plt.plot(range(i), averageServers_V, label='Vulnérables (V)')
+plt.plot(range(i), averageServers_I, label='Infectés (I)')
+plt.plot(range(i), averageServers_P, label='Protégés (P)')
 
 # Ajustements finaux du tracé
 plt.xlabel('Temps')

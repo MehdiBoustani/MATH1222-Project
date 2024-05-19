@@ -4,7 +4,7 @@ from copy import deepcopy
 
 # CONSTANTS
 SIMULATIONS = 25
-STEPS = 60
+STEPS = 150
 
 # Transition probabilites
 beta1 = 0.006

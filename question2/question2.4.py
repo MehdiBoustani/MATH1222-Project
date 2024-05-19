@@ -2,12 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # CONSTANTS
-SIMULATIONS = 50
-STEPS = 1000
+SIMULATIONS = 25
+STEPS = 10000
 
 # --------------- Transitions ------------------ #
 
-# # """ ORDRE DE 0.8 """
+""" ORDRE DE 0.8 : Pour un temps d'attente raisonnable et un résultat suffisament précis,
+                     nous pouvons utiliser entre 25 et 100 simulations 
+                """
 beta = 0.01
 mu = 0.12575
 alpha = 1
@@ -17,9 +19,10 @@ alpha = 1
 # alpha = 1
 
 
-# # """ ORDRE DE 2 """
-# beta = 0.03
-# mu = 0.1509
+""" ORDRE DE 2 " Pour un temps d'attente raisonnable et un résultat suffisament précis,
+                     nous pouvons utiliser entre 10 et 25 simulations """
+# beta = 0.01
+# mu = 0.0503
 # alpha = 1
 
 # beta = 0.03
@@ -45,8 +48,6 @@ N = len(W) # number of servers
 # Check βλ/μ 
 greatestEigenvalue = np.linalg.eigvalsh(W)[-1]
 print("Greatest eigenvalue = ", greatestEigenvalue)
-print((beta*greatestEigenvalue)/mu)
-
 print(" beta/mu <= 1/greatest eigenvalue ? ", (beta/mu) <= (1/greatestEigenvalue)) # 
 
 V = 0
@@ -64,7 +65,7 @@ initialConfig = np.array([I] * nbInfected)
 eradicationTime = 0
 
 # Lists to store counts of servers (infected) at each time step for ALL SIMULATIONS
-totalCountsI = np.zeros(STEPS)
+totalCountsI = np.zeros(STEPS+1)
 
 for sim in range(SIMULATIONS):
     current_configuration = initialConfig
@@ -79,6 +80,7 @@ for sim in range(SIMULATIONS):
 
         if not eradicated and I not in current_configuration:
             eradicationTime += i
+            
             eradicated = True
 
         next_configuration = []
@@ -139,8 +141,9 @@ else :
 # Get the average counts over all SIMULATIONS
 totalCountsI /= SIMULATIONS
 
+
 # Plotting
-timeSteps = range(1, STEPS+1)
+timeSteps = range(1, STEPS+2)
 plt.plot(timeSteps, totalCountsI, label='Infectés (I)', color='red')
 
 plt.xlabel('Temps')

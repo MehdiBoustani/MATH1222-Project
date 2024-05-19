@@ -9,11 +9,12 @@ STEPS = 100
 
 beta = 0.3
 mu = 0.4
-# alpha = 0.05
+alpha = 0.05
+# alpha = 0.07
+# alpha = 0.09
 # alpha = 0.1
-# alpha = 0.15 
-alpha = 0.5
-
+# alpha = 0.15
+# alpha = 0.2
 
 V_to_I = beta
 V_to_V =  1 - beta
@@ -61,9 +62,6 @@ for sim in range(SIMULATIONS):
     totalCountsP[0] += nbProtected
 
     for i in range(STEPS-1): # time steps
-
-        # V_to_I = beta
-        # V_to_V =  1 - beta
 
         if not eradicated and I not in current_configuration:
             eradicationTime += i
@@ -135,13 +133,13 @@ totalCountsI /= SIMULATIONS
 totalCountsP /= SIMULATIONS
 
 timeSteps = range(STEPS)
-# plt.plot(timeSteps, totalCountsV, label='Vulnérables (V)')
-plt.plot(timeSteps, totalCountsI, label='Infectés (I)', color='red')
-# plt.plot(timeSteps, totalCountsP, label='Protégés (P)')
+plt.plot(timeSteps, totalCountsV, label='Vulnérables (V)')
+plt.plot(timeSteps, totalCountsI, label='Infectés (I)')
+plt.plot(timeSteps, totalCountsP, label='Protégés (P)')
 
 plt.xlabel('Temps')
 plt.ylabel('Nombre moyen de serveurs')
 plt.ylim(0, N)
-plt.title('Évolution du nombre moyen de serveurs : {}'.format(SIMULATIONS))
+plt.title('Évolution du nombre moyen de serveurs : Simulations {}'.format(SIMULATIONS))
 plt.legend()
 plt.show()

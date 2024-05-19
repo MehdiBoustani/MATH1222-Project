@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # CONSTANTS
-SIMULATIONS = 100
+SIMULATIONS = 300
 STEPS = 50
 
 # --------------- Transitions ------------------ #
@@ -137,6 +137,6 @@ plt.plot(timeSteps, totalCountsP, label='Protégés (P)')
 
 plt.xlabel('Temps')
 plt.ylabel('Nombre moyen de serveurs')
-plt.title('Évolution du nombre moyen de serveurs : {}'.format(SIMULATIONS))
+plt.title('Évolution du nombre moyen de serveurs : {} Simulations'.format(SIMULATIONS))
 plt.legend()
 plt.show()
