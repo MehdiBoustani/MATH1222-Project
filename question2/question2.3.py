@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 # CONSTANTS
 SIMULATIONS = 100
-STEPS = 100
+STEPS = 50
 
 # --------------- Transitions ------------------ #
 

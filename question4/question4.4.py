@@ -9,8 +9,8 @@ from copy import deepcopy
 
 # CONSTANTS
 
-SIMULATIONS = 25
-STEPS = 100
+SIMULATIONS = 50
+STEPS = 50
 
 # Transition probabilites
 beta1 = 0.006
@@ -29,7 +29,6 @@ I = 1
 P = 2
 
 SEGI = 220
-
 
 """
     @brief : Initializes a network using We and Ns 
@@ -168,11 +167,12 @@ def main():
 
     mu_SEGI = mu_network
 
-    target = 0.01
+    target = 0.01 # close probability to 0 
 
     targetReached = False
-    delta_mu = 0.01
+    delta_mu = 0.02 # added to mu until target
 
+    dangerProb = 0
     # Until we are close to 0
     while not targetReached:
 
@@ -187,6 +187,8 @@ def main():
 
         dangerProb = count_exceed_10/SIMULATIONS
 
+        # print("danger prob = {:.50f}".format(dangerProb))
+
         if dangerProb < target :
             targetReached = True
         
@@ -195,6 +197,6 @@ def main():
     
     print("la valeur de μ du nouvel antivirus devrait être autour de : ", mu_SEGI)
 
-    print("Probabilité d'avoir au moins 20 pourcent de machines infectées simultanément au SEGI est de {} avec μ = {} ".format(dangerProb, mu_SEGI))
+    print("Probabilité d'avoir au moins 20 pourcent de machines infectées simultanément au SEGI est de {:.20f} avec μ = {} ".format(dangerProb, mu_SEGI))
 
 main()

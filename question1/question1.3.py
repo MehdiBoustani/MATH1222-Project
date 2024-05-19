@@ -45,7 +45,6 @@ for i in range(timeSteps):
     averageServers_P.append((current_state[2] + current_state[3] + current_state[4] + current_state[5] + N*current_state[6]))
 
     current_state = np.dot(current_state, P)
-    print(current_state)
 
 # plotting 
 plt.plot(range(timeSteps), averageServers_V, label='Vulnérables (V)')

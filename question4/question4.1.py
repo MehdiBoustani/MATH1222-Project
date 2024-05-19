@@ -125,7 +125,6 @@ def simulate(network, timeSteps):
 
 def main():
     initialNetwork = initNetwork()
-    print(initialNetwork[220])
     # Initial state : the virus attacks company/entreprise 0 -> one infected server
     initialNetwork[0]['servers'][I] += 1
     initialNetwork[0]['servers'][V] -= 1

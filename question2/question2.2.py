@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # CONSTANTS
-SIMULATIONS = 300
+SIMULATIONS = 100
 STEPS = 50
 
 # --------------- Transitions ------------------ #

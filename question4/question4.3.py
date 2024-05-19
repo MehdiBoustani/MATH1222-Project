@@ -8,7 +8,7 @@ from copy import deepcopy
         """
 
 SIMULATIONS = 100
-STEPS = 200
+STEPS = 100
 
 # Transition probabilites
 beta1 = 0.006
